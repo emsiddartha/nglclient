@@ -1,0 +1,63 @@
+<div class="form-group">
+  <label for="comment">MARC Record:</label>
+  <textarea class="form-control" rows="5" [(ngModel)]="marcRecord"></textarea>
+</div>
+<div class="form-group">
+  <button type="button" class="btn btn-primary" (click)="onImportClick($event)">Import Record</button>
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">First</th>
+      <th scope="col">Options</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let cataloguRecord of records">
+      <th scope="row">
+        <input type="checkbox" class="form-check-input" [(ngModel)]="cataloguRecord.selected"/>
+      </th>
+      <td><p class="text-justify">{{cataloguRecord.title}}</p></td>
+      <td>
+          <button type="button" class="btn btn-outline-primary" (click)="onViewRecordClick($event,cataloguRecord.index)"    data-toggle="modal" data-target="#exampleModalLong">View record</button>
+          <button type="button" class="btn btn-outline-primary">Save record to Catalog</button>         
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" *ngIf="clickedRecord!==undefined">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">View Record</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" [(ngModel)]="clickedRecord" ngDefaultControl>
+          <p align="left">
+              <strong>Leader</strong>{{clickedRecord.rawRecord.leader}}<br>
+              <span *ngFor="let dataField of clickedRecord.rawRecord.dataFields">                
+                  <ng-container *ngIf="dataField.tag!=906">
+                      <strong>{{dataField.tag}} &nbsp;&nbsp;{{dataField.indicator1}}  {{dataField.indicator2}}</strong><br>                
+                      <span *ngFor="let subField of dataField.subFields">
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>{{subField.identifier}}</strong>&nbsp;&nbsp;{{subField.data}}<br>
+                      </span>  
+                  </ng-container>
+              </span>            
+          </p>
+          <hr/>
+          Catalog source's local fields
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
