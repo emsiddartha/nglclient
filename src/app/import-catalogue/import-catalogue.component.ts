@@ -32,7 +32,7 @@ export class ImportCatalogueComponent implements OnInit {
       (response)=> {
         this.records=[]
         let indexVal:number = 0;
-        for(let record of response){
+        /*for(let record of response){
           for(let dataField of record.dataFields){
             if(dataField.tag=='245'){
               let title:string
@@ -55,7 +55,7 @@ export class ImportCatalogueComponent implements OnInit {
             }
           }
           
-        }
+        }*/
       },
       (error)=>{alert("error"+error)}
       )

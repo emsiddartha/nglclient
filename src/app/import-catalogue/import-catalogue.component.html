@@ -40,9 +40,9 @@
         </div>
         <div class="modal-body" [(ngModel)]="clickedRecord" ngDefaultControl>
           <p align="left">
-              <strong>Leader</strong>{{clickedRecord.rawRecord.leader}}<br>
+              <strong>Leader</strong>&nbsp;&nbsp;{{clickedRecord.rawRecord.leader}}<br>
               <span *ngFor="let dataField of clickedRecord.rawRecord.dataFields">                
-                  <ng-container *ngIf="dataField.tag!=906">
+                  <ng-container *ngIf="dataField.tag.charAt(0)!=9">
                       <strong>{{dataField.tag}} &nbsp;&nbsp;{{dataField.indicator1}}  {{dataField.indicator2}}</strong><br>                
                       <span *ngFor="let subField of dataField.subFields">
                           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>{{subField.identifier}}</strong>&nbsp;&nbsp;{{subField.data}}<br>
@@ -52,7 +52,16 @@
           </p>
           <hr/>
           Catalog source's local fields
-
+          <p align="left">
+            <span *ngFor="let dataField of clickedRecord.rawRecord.dataFields">                
+                <ng-container *ngIf="dataField.tag.charAt(0)==9">
+                    <strong>{{dataField.tag}} &nbsp;&nbsp;{{dataField.indicator1}}  {{dataField.indicator2}}</strong><br>                
+                    <span *ngFor="let subField of dataField.subFields">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>{{subField.identifier}}</strong>&nbsp;&nbsp;{{subField.data}}<br>
+                    </span>  
+                </ng-container>
+            </span>         
+          </p>   
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
