@@ -3,6 +3,7 @@ import { ConfigService } from '../config.service';
 import { GlobalValues } from '../globalValues.service';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { CatalogueRecordVO } from '../catalogueRecord';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-import-catalogue',
@@ -11,54 +12,67 @@ import { CatalogueRecordVO } from '../catalogueRecord';
   providers: [ConfigService]
 })
 export class ImportCatalogueComponent implements OnInit {
-  marcRecord:string
-  constructor(private configService:ConfigService, private globalValues:GlobalValues) { }
+  marcRecord:string  
+  constructor(private configService:ConfigService, private globalValues:GlobalValues) {
+
+  }
   records : CatalogueRecordVO[] = []
   clickedRecord: CatalogueRecordVO
   ngOnInit() {
+    
   }
+  
   onImportClick(event: any){
     let httpHeaders = new HttpHeaders({
       'Content-Type':'application/x-www-form-urlencoded',
       'x-tenant-id': this.globalValues.getTenancyId(),
       'x-auth-token': this.globalValues.getJwtToken()
-    })
-    const params = new HttpParams().set('data',this.marcRecord)    
+    })    
     let options = {
       headers:httpHeaders
     }
-    this.configService.httpClient.post(this.configService.nglUrl+"/cataloguing",params,options)
-    .subscribe(
-      (response)=> {
-        this.records=[]
-        let indexVal:number = 0;
-        /*for(let record of response){
-          for(let dataField of record.dataFields){
-            if(dataField.tag=='245'){
-              let title:string
-              let sor:string
-              for(let subField of dataField.subFields){
-                if(subField.identifier=='a'){
-                  title = subField.data
+    
+  const obs = this.configService.httpClient.post(this.configService.nglCataloguingUrl+"/cataloguing/parseiso2709",this.marcRecord,options)
+  const myObserver = {
+    next: x => {
+      let records:MarcRecord[] = JSON.parse(JSON.stringify(x))         
+      for(let loop = 0; loop<records.length; loop++){
+        let title=""
+        const oneRec = records[loop]
+        for(let loop1=0; loop1<oneRec.dataFields.length;loop1++){
+          const dataField = oneRec.dataFields[loop1]
+          if(dataField.tag=="245"){
+            let titleS,sorS,rtitleS = ""            
+            for(let loop3=0; loop3<dataField.subfields.length; loop3++){
+                const subfield = dataField.subfields[loop3]
+                if(subfield.identifier=="a"){
+                   titleS = subfield.data 
                 }
-                if(subField.identifier=='c'){
-                  sor = subField.data
-                }
-              }
-              let cat = new CatalogueRecordVO()
-              cat.title = title+sor
-              cat.index = indexVal
-              cat.rawRecord = record
-              indexVal++
-              this.records.push(cat)
-              //console.log(title+sor)
+                if(subfield.identifier=="b"){
+                  rtitleS = subfield.data 
+               }
+               if(subfield.identifier=="c"){
+                sorS = subfield.data 
+             }
             }
+            title=titleS+rtitleS+sorS
           }
-          
-        }*/
-      },
-      (error)=>{alert("error"+error)}
-      )
+        }
+        console.log(title)
+        let cat = new CatalogueRecordVO()
+              cat.title = title
+              cat.index = loop
+              cat.rawRecord = oneRec
+              this.records.push(cat)
+      }            
+    },
+    error: err => console.error('Observer got an error: ' + err),
+    complete: () => console.log('Observer got a complete notification'),
+  };
+  obs.subscribe(myObserver)
+    
+    
+    
   }
   onViewRecordClick(event: any, recordId: number){    
     this.clickedRecord = this.records[recordId]

@@ -44,7 +44,7 @@
               <span *ngFor="let dataField of clickedRecord.rawRecord.dataFields">                
                   <ng-container *ngIf="dataField.tag.charAt(0)!=9">
                       <strong>{{dataField.tag}} &nbsp;&nbsp;{{dataField.indicator1}}  {{dataField.indicator2}}</strong><br>                
-                      <span *ngFor="let subField of dataField.subFields">
+                      <span *ngFor="let subField of dataField.subfields">
                           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>{{subField.identifier}}</strong>&nbsp;&nbsp;{{subField.data}}<br>
                       </span>  
                   </ng-container>
@@ -56,7 +56,7 @@
             <span *ngFor="let dataField of clickedRecord.rawRecord.dataFields">                
                 <ng-container *ngIf="dataField.tag.charAt(0)==9">
                     <strong>{{dataField.tag}} &nbsp;&nbsp;{{dataField.indicator1}}  {{dataField.indicator2}}</strong><br>                
-                    <span *ngFor="let subField of dataField.subFields">
+                    <span *ngFor="let subField of dataField.subfields">
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>{{subField.identifier}}</strong>&nbsp;&nbsp;{{subField.data}}<br>
                     </span>  
                 </ng-container>

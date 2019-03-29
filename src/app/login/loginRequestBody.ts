@@ -1,8 +1,10 @@
 export class LoginRequestBody{
-    userId:string
+    username:string
     password:string
-    constructor(userId:string,password:string){
-        this.userId=userId
+    libCode: string
+    constructor(username:string,password:string, libCode: string){
+        this.username=username
         this.password=password
+        this.libCode = libCode
     }
 }
